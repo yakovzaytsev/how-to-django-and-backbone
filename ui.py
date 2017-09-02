@@ -3,6 +3,7 @@
 import sys
 from django.conf import settings
 from django.conf.urls import url
+from django.core.wsgi import get_wsgi_application
 from django.http import HttpResponse
 
 
@@ -25,6 +26,9 @@ def home_page(request):
 urlpatterns = (
     url(r'^$', home_page),
 )
+
+
+application = get_wsgi_application()
 
 
 if __name__ == '__main__':
