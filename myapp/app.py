@@ -1,9 +1,14 @@
 #!/usr/bin/env python3.6
 
+from datetime import datetime
 import os
 import sys
 import django
 from django.conf import settings
+# next 3 lines what makes makemigrations work
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path[0] = os.path.dirname(BASE_DIR)
+APP_LABEL = os.path.basename(BASE_DIR)
 settings.configure(
     DEBUG=True,
     SECRET_KEY='secret',
@@ -13,6 +18,7 @@ settings.configure(
         os.path.dirname(__file__),
     ],
     INSTALLED_APPS = (
+        APP_LABEL,
         'django.contrib.auth',
         'django.contrib.contenttypes',
         'django.contrib.staticfiles',
@@ -28,7 +34,7 @@ settings.configure(
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'how_to_django_and_bootstrap'
+            'NAME': 'myapp'
         }
     },
     CHANNEL_LAYERS = {
@@ -56,11 +62,20 @@ settings.configure(
 django.setup()
 from django.conf.urls import include, url
 from django.core.wsgi import get_wsgi_application
+from django.db import models
 from django.shortcuts import render
 from django.http import HttpResponse
 from channels.routing import route
 from channels.handler import AsgiHandler, AsgiRequest
 from rest_framework.authtoken.views import obtain_auth_token
+
+
+class ModelRun(models.Model):
+    name = models.TextField(unique=True, default='')
+    start_time = models.DateTimeField(default=None)  # datetime.now?
+    end_time = models.DateTimeField(default=None)
+    class Meta:
+        app_label = APP_LABEL
 
 
 def home_page(request):

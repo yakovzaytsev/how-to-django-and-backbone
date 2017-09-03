@@ -6,7 +6,12 @@
 
 - create PostgreSQL database
 
-    $ createdb -E UTF-8 how_to_django_and_backbone
+    $ createdb -E UTF-8 myapp
+
+- makemigrations
+
+    $ cd myapp
+    $ python ui.py makemigrations myapp
 
 - then apply the migrations
 
