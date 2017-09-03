@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello</title>
+  </head>
+
+  <body>
+    Hello world
+
+    <script type="text/javascript">
+      // Note that the path doesn't matter for routing; any WebSocket
+      // connection gets bumped over to WebSocket consumers
+      socket = new WebSocket("ws://" + window.location.host + "/chat/");
+      socket.onmessage = function(e) {
+          alert(e.data);
+      }
+      socket.onopen = function() {
+          socket.send("hello world");
+      }
+      // Call onopen directly if socket is already open
+      if (socket.readyState == WebSocket.OPEN) socket.onopen();
+    </script>
+  </body>
+</html>

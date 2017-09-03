@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.6
 
+import os
 import sys
 import django
 from django.conf import settings
@@ -32,11 +33,27 @@ settings.configure(
             'BACKEND': 'asgiref.inmemory.ChannelLayer',
             'ROUTING': f'{__name__}.channel_routing',
         }
-    }
+    },
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [os.path.dirname(__file__)],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
+        },
+    ],
 )
 django.setup()
 from django.conf.urls import include, url
 from django.core.wsgi import get_wsgi_application
+from django.shortcuts import render
 from django.http import HttpResponse
 from channels.routing import route
 from channels.handler import AsgiHandler, AsgiRequest
@@ -44,7 +61,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 
 def home_page(request):
-    return HttpResponse('Hello world')
+    return render(request, 'home.html')
 
 
 def http_consumer(message):
@@ -54,15 +71,24 @@ def http_consumer(message):
         message.reply_channel.send(chunk)
 
 
+def ws_message(message):
+    # ASGI WebSocket packet-received and send-packet messages
+    # both have a 'text' key for their textual data
+    message.reply_channel.send({
+        'text': f"text is {message.content['text']}",
+    })
+
+
 urlpatterns = (
-    # url(r'^$', home_page),
+    url(r'^$', home_page),
     # url(r'^api/token/', obtain_auth_token, name='api_token'),
 )
 
 
 channel_routing = [
-    # override Django view layeer and handles every HTTP request directly
-    route('http.request', f'{__name__}.http_consumer'),
+    # # override Django view layeer and handles every HTTP request directly
+    # route('http.request', f'{__name__}.http_consumer'),
+    route('websocket.receive', ws_message),
 ]
 
 
