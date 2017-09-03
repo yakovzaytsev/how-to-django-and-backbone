@@ -9,6 +9,9 @@ settings.configure(
     SECRET_KEY='secret',
     ROOT_URLCONF=__name__,
     STATIC_URL = '/static/',
+    STATICFILES_DIRS = [
+        os.path.dirname(__file__),
+    ],
     INSTALLED_APPS = (
         'django.contrib.auth',
         'django.contrib.contenttypes',
