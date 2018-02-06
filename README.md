@@ -27,6 +27,18 @@ On OS X do
 
 to workaround matplotlib in virtualenv 
 
+## How to run ONLY app.js
+
+Get http-server
+
+    $ sudo npm install http-server -g
+
+and run 
+
+    how-to-django-and-backbone/myapp $ http-server 
+    
+and open http://127.0.0.1:8081/home.html in Chrome dev tools
+
 
 
 
